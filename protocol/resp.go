@@ -25,28 +25,6 @@ const (
 	E =  '-'
 )
 
-
-
-
-type Value struct {
-	//type of the value
-	_type string
-
-	//holds the value of the string received from the simple strings.
-	str string
-
-	//num holds the value of the integer received from the integers.
-	num int
-
-	//bulk is used to store the string received from the bulk strings
-	//
-	//SEE: https://redis.io/docs/reference/protocol-spec/#resp-bulk-strings.
-	bulk string
-
-	//array holds all the values received from the
-	array []Value
-}
-
 type RESP struct {
 	reader *bufio.Reader
 }
