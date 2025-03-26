@@ -72,7 +72,7 @@ func (r *RESP) readInteger() (x int, n int, err error) {
 
 func (r *RESP) readArray() (Value,  error) {
 	v:= Value{}
-	v._type = "array"
+	v.Type = "array"
 
 	length,_, err:= r.readInteger()
 
@@ -80,16 +80,16 @@ func (r *RESP) readArray() (Value,  error) {
 		return v, err
 	}
 
-	v.array = make([]Value, length)
+	v.Array = make([]Value, length)
 
-	for i:=0; i< length; i++ {
+	for i:=range length {
 		val, err:= r.Read()
 
 		if err != nil {
 			return Value{}, err
 		}
 
-		v.array[i] = val
+		v.Array[i] = val
 	}
 
 
@@ -124,7 +124,7 @@ func (r *RESP) Read() (Value, error) {
 func (r *RESP) readBulk() (Value, error) {
 	v:= Value{}
 
-	v._type = "bulk"
+	v.Type = "bulk"
 
 	length, _ , err:= r.readInteger()
 
@@ -134,15 +134,9 @@ func (r *RESP) readBulk() (Value, error) {
 
 	bulk:= make([]byte, length)
 
-
-
-	// r.ReadLine() //NOTE: remove if strings are messed up
-
 	r.reader.Read(bulk)
 
-	fmt.Println("bulk bytes", bulk)
-
-	v.bulk = string(bulk)
+	v.Bulk = string(bulk)
 
 	r.ReadLine()
 

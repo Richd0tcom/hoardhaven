@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"strings"
 
 	"github.com/richd0tcom/hoardhaven/protocol"
 	// "strings"
@@ -60,17 +61,34 @@ func main() {
 		}
 
 		fmt.Println(value)
-		
-		
 
-		
-		// r := bufio.NewReader(strings.NewReader(""))
+		if value.Type != "array" {
+			fmt.Println("Invalid request, expected array")
+			continue
+		}
 
-		// byt, err:= r.ReadByte()
+		if len(value.Array) == 0 {
+			fmt.Println("Invalid request, expected array length > 0")
+			continue
+		}
 
+		cmd:= strings.ToUpper(value.Array[0].Bulk)
+
+		args:= value.Array[1:]
+
+		writer:= protocol.NewRESPWriter(conn)
+
+		handler, ok:= protocol.Handlers[cmd]
+
+		if !ok {
+			fmt.Println("Invalid command: ", cmd)
+			writer.Write(protocol.Value{Type: "string", Str: ""})
+			continue
+		}
+
+		result:= handler(args)
+
+		writer.Write(result)
 		
-		
-		
-		conn.Write([]byte("+OK\r\n"))
 	}
 }
